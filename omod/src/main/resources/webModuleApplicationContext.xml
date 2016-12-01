@@ -22,6 +22,32 @@
 
 	<!-- Add here beans related to the web context -->
 
+	<bean id="billingmigrationUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		
+		<property name="order">
+			<value>2</value>
+		</property>
+                                            
+		<property name="mappings">
+			<props>
+				<prop key="module/billingmigration/dataImport.list">mohBillingDataImportController</prop>				
+			</props>
+		</property>
+	</bean>
+
+	<!-- Controllers -->
+	<bean id="mohBillingDataImportController" class="org.openmrs.module.billingmigration.web.controller.MohBillingDataImportController">
+		<property name="viewName"><value>/module/billingmigration/mohBillingDataImport</value></property>
+	</bean>
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	 
 	<!-- Annotation based controllers -->
 	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>

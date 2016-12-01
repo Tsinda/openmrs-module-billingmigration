@@ -13,6 +13,10 @@
  */
 package org.openmrs.module.billingmigration.api;
 
+import java.util.Date;
+import java.util.List;
+
+import org.openmrs.User;
 import org.openmrs.api.OpenmrsService;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,9 +32,44 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 public interface serviceService extends OpenmrsService {
-     
-	/*
-	 * Add service methods here
-	 * 
+    
+	
+	/**
+	 * get all existing insurance policies and admit them
+	 * @param date
+	 * @return
 	 */
+	public Integer getExistingInsurancePolicy(Date date);
+	
+	/**
+	 * create global bills corresponding to created admission
+	 * @return
+	 */
+	public Integer createGlobalBills();
+	
+	/**
+	 * update created consommations to created global bills
+	 * @return
+	 */
+	public Integer updateConsommation();
+	
+	/**
+	 * get all existing payments
+	 * @return
+	 */
+	public Integer getPayments();
+	
+	/**
+	 * set ALL as hop service to all old billed items before new release billing module
+	 */
+	public void updateBillItems();
+	
+	/**
+	 * closes all bills done before the provided date and set the user as the user who closed them
+	 * @param date
+	 * @param user
+	 * @return
+	 */
+	public Integer closeGlobalBills(Date date,User user);
+	
 }

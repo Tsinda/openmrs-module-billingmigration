@@ -13,10 +13,10 @@
  */
 package org.openmrs.module.billingmigration;
 
-
 import org.apache.commons.logging.Log; 
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.module.Activator;
+
 
 /**
  * This class contains the logic that is run every time this module is either started or stopped.

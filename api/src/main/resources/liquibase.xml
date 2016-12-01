@@ -181,6 +181,9 @@
 				<constraints nullable="false" />
 			</column>
 
+			<column defaultValueBoolean="false" name="closed" type="BOOLEAN">
+				<constraints nullable="false" />
+			</column>
 			<column name="closed_by" type="int(11)" />
 			<column name="closing_date" type="datetime" />
 			<column defaultValueBoolean="false" name="voided" type="BOOLEAN">
@@ -642,16 +645,7 @@
 			</column>
 			<column name="amount_refunded" type="decimal(20,2)" />
 			<column name="refunded_by" type="int" />
-			<column name="is_approved" type="smallint"
-				defaultValueNumeric="0">
-				<constraints nullable="false" />
-			</column>
-			<column name="approved_by" type="int(11)" />
-			<column name="is_declined" type="smallint"
-				defaultValueNumeric="0">
-				<constraints nullable="false" />
-			</column>
-			<column name="declining_note" type="varchar(250)" />
+			
 			<column name="creator" type="int">
 				<constraints nullable="false" />
 			</column>
@@ -667,26 +661,24 @@
 			<column name="voided_by" type="int(11)" />
 		</createTable>
 
-		<addForeignKeyConstraint baseColumnNames="approved_by"
-			baseTableName="moh_bill_payment_refund" constraintName="refund_approved_by"
-			referencedColumnNames="user_id" referencedTableName="users" />
 
 		<addForeignKeyConstraint baseColumnNames="bill_payment_id"
 			baseTableName="moh_bill_payment_refund" constraintName="refund_bill_payment"
 			referencedColumnNames="bill_payment_id" referencedTableName="moh_bill_payment" />
+			
+		<addForeignKeyConstraint baseColumnNames="refunded_by"
+			baseTableName="moh_bill_payment_refund" constraintName="payment_refunded_by"
+			referencedColumnNames="user_id" referencedTableName="users" />
 
 		<addForeignKeyConstraint baseColumnNames="creator"
 			baseTableName="moh_bill_payment_refund" constraintName="refund_creator"
-			referencedColumnNames="user_id" referencedTableName="users" />
-
-		<addForeignKeyConstraint baseColumnNames="refunded_by"
-			baseTableName="moh_bill_payment_refund" constraintName="refund_refunded_by"
 			referencedColumnNames="user_id" referencedTableName="users" />
 
 		<addForeignKeyConstraint baseColumnNames="voided_by"
 			baseTableName="moh_bill_payment_refund" constraintName="refund_voided_by"
 			referencedColumnNames="user_id" referencedTableName="users" />
 	</changeSet>
+	
 	<changeSet author="Faustin" id="moh-bill-paid-service-bill-refund">
 		<preConditions>
 			<not>
@@ -700,6 +692,9 @@
 				autoIncrement="true">
 				<constraints nullable="false" primaryKey="true" />
 			</column>
+			<column name="created_date" type="datetime">
+				<constraints nullable="false" />
+			</column>
 			<column name="refund_id" type="int(11)">
 				<constraints nullable="false" />
 			</column>
@@ -709,12 +704,30 @@
 			<column name="refund_quantity" type="int(11)">
 				<constraints nullable="false" />
 			</column>
+			
 			<column name="creator" type="int(11)">
 				<constraints nullable="false" />
 			</column>
-			<column name="created_date" type="datetime">
+
+			<column name="refund_reason" type="varchar(250)" />
+			
+			<column name="is_approved" type="smallint"
+				defaultValueNumeric="0">
 				<constraints nullable="false" />
 			</column>
+			<column name="approval_date" type="datetime"/>
+
+			<column name="approved_by" type="int(11)" />
+			
+			<column name="is_declined" type="smallint"
+				defaultValueNumeric="0">
+				<constraints nullable="false" />
+			</column>
+			
+			<column name="declining_note" type="varchar(250)" />
+			
+			<column name="decline_date" type="datetime"/>
+			
 			<column name="voided" type="smallint" defaultValueNumeric="0">
 				<constraints nullable="false" />
 			</column>
@@ -723,16 +736,37 @@
 			<column name="voided_by" type="int(11)" />
 		</createTable>
 
-		<addForeignKeyConstraint baseColumnNames="creator"
-			baseTableName="moh_bill_paid_service_bill_refund" constraintName="service_bill_refund_creator"
-			referencedColumnNames="user_id" referencedTableName="users" />
-		<addForeignKeyConstraint baseColumnNames="paid_item_id"
-			baseTableName="moh_bill_paid_service_bill_refund" constraintName="service_bill_refund_paid_service_bill"
-			referencedColumnNames="paid_service_bill_id" referencedTableName="moh_bill_paid_service_bill" />
+		<addForeignKeyConstraint baseColumnNames="creator" baseTableName="moh_bill_paid_service_bill_refund" 
+		 constraintName="service_bill_refund_creator" referencedColumnNames="user_id" referencedTableName="users" />
+			
+		<addForeignKeyConstraint baseColumnNames="paid_item_id" baseTableName="moh_bill_paid_service_bill_refund" 
+		constraintName="service_bill_refund_paid_service_bill" referencedColumnNames="paid_service_bill_id" referencedTableName="moh_bill_paid_service_bill" />
 
 		<addForeignKeyConstraint baseColumnNames="refund_id"
 			baseTableName="moh_bill_paid_service_bill_refund" constraintName="service_bill_refund_refund"
 			referencedColumnNames="refund_id" referencedTableName="moh_bill_payment_refund" />
+			
+		<addForeignKeyConstraint baseColumnNames="approved_by"
+			baseTableName="moh_bill_paid_service_bill_refund" constraintName="refunded_item_approved_by"
+			referencedColumnNames="user_id" referencedTableName="users" />
+			
+		<addForeignKeyConstraint baseColumnNames="voided_by"
+			baseTableName="moh_bill_paid_service_bill_refund" constraintName="refunded_item_voided_by"
+			referencedColumnNames="user_id" referencedTableName="users" />
+			
+	</changeSet>
+	
+    <changeSet author="Faustin" id="modify-payment-refund-paid-item">
+		<preConditions>
+			<not>
+				<columnExists tableName="moh_bill_payment_refund"
+					columnName="approval_date" />
+			</not>
+		</preConditions>
+		<comment>Add paid to mohBillPatientServiceBill</comment>
+		<sql>
+			ALTER TABLE `moh_bill_patient_service_bill` ADD COLUMN `is_paid` smallint(1) NOT NULL DEFAULT '0' AFTER `consommation_id`;
+		</sql>		
 	</changeSet>
 
 
@@ -764,7 +798,8 @@
 			(18,'SOINS INTENSIFS','SOINS INTENSIFS',1,'2016-08-05',0),
 			(19,'STOMATOLOGIE','STOMATOLOGIE',1,'2016-08-05',0),
 			(20,'AUTRES','AUTRES',1,'2016-08-05',0),
-			(21,'CONSULTATION','CONSULTATION',1,'2016-08-05',0);
+			(21,'CONSULTATION','CONSULTATION',1,'2016-08-05',0),
+			(22,'ALL','ALL',1,'2016-11-29',0); 
 
 			insert into `moh_bill_department`
 			(department_id,name,description,creator,created_date,voided) values
@@ -780,23 +815,39 @@
 			(10,'ALL DEPARTMENTS','ALL DEPARTMENTS',1,'2016-08-05',0);
 		</sql>
 	</changeSet>
-	<changeSet author="Faustin" id="modify-payment-refund-paid-item">
-		<preConditions>
-			<not>
-				<columnExists tableName="moh_bill_payment_refund"
-					columnName="approval_date" />
-			</not>
-		</preConditions>
-		<comment>Add approvalDate to mohBillPaymentRefund</comment>
-		<sql>
-			ALTER TABLE `moh_bill_payment_refund` ADD COLUMN `approval_date` date default NULL AFTER `is_approved`;
-			ALTER TABLE `moh_bill_patient_service_bill` ADD COLUMN `is_paid` smallint(1) NOT NULL DEFAULT '0' AFTER `consommation_id`;
-		</sql>		
-	</changeSet>
+
 	<changeSet author="Faustin" id="update-consommation">
 	<comment>Add ALLDEPARTMENT to link it to existing consommation where department is  null</comment>	
 	<sql>
 	 update moh_bill_consommation set department_id=10 where department_id is null;
+	</sql>	
+	</changeSet>
+	
+	<changeSet author="Faustin" id="modify_patient_service_bill">
+	<preConditions>
+			<not>
+				<columnExists tableName="moh_bill_patient_service_bill"
+					columnName="service_id" />
+			</not>
+			<not>
+				<columnExists tableName="moh_bill_patient_service_bill"
+					columnName="paid_quantity" />
+			</not>
+			
+		</preConditions>
+	<comment>Add hop_service to patient_service_bill</comment>	
+	<sql>
+	 ALTER TABLE `moh_bill_patient_service_bill` ADD column `service_id` int(11) DEFAULT NULL AFTER `consommation_id`;
+	 ALTER TABLE `moh_bill_patient_service_bill` ADD CONSTRAINT `patient_service_bill_hop_service` FOREIGN KEY (`service_id`) REFERENCES `moh_bill_hop_service` (`service_id`);
+	 ALTER TABLE `moh_bill_patient_service_bill` ADD column `paid_quantity` decimal(20,2) DEFAULT '0' AFTER `quantity` ;
+	</sql>	
+	</changeSet>
+	
+	<changeSet author="Mariam" id="reset_auto_increment_to_global_bill_and_admission">
+	<comment>Reset auto increment to 1 on global_bill and admission</comment>	
+	<sql>
+	 ALTER TABLE `moh_bill_global_bill` AUTO_INCREMENT = 1;
+	 ALTER TABLE `moh_bill_admission` AUTO_INCREMENT = 1;
 	</sql>	
 	</changeSet>
 

@@ -13,6 +13,10 @@
  */
 package org.openmrs.module.billingmigration.api.impl;
 
+import java.util.Date;
+import java.util.List;
+
+import org.openmrs.User;
 import org.openmrs.api.impl.BaseOpenmrsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,4 +45,51 @@ public class serviceServiceImpl extends BaseOpenmrsService implements serviceSer
     public serviceDAO getDao() {
 	    return dao;
     }
+
+	/* (non-Javadoc)
+	 * @see org.openmrs.module.billingmigration.api.serviceService#getExistingInsurancePolicy(java.util.Date)
+	 */
+	@Override
+	public Integer getExistingInsurancePolicy(Date date) {
+		return dao.getExistingInsurancePolicy(date);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openmrs.module.billingmigration.api.serviceService#createGlobalBills()
+	 */
+	@Override
+	public Integer createGlobalBills() {
+		return dao.createGlobalBills();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openmrs.module.billingmigration.api.serviceService#updateConsommation()
+	 */
+	@Override
+	public Integer updateConsommation() {
+		return dao.updateConsommation();
+	}
+
+	@Override
+	public Integer getPayments() {
+		return dao.getPayments();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openmrs.module.billingmigration.api.serviceService#updateBillItems()
+	 */
+	@Override
+	public void updateBillItems() {
+		dao.updateBillItems();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.openmrs.module.billingmigration.api.serviceService#closeGlobalBills(java.util.Date, org.openmrs.User)
+	 */
+	@Override
+	public Integer closeGlobalBills(Date date,User user) {
+		return dao.closeGlobalBills(date,user);
+	}
+	
+	
 }
