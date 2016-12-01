@@ -13,6 +13,8 @@
  */
 package org.openmrs.module.billingmigration.web.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openmrs.api.context.Context;
@@ -30,7 +32,13 @@ public class  billingmigrationManageController {
 	protected final Log log = LogFactory.getLog(getClass());
 	
 	@RequestMapping(value = "/module/billingmigration/manage", method = RequestMethod.GET)
-	public void manage(ModelMap model) {
+	public void manage(ModelMap model,HttpServletRequest request) {
 		model.addAttribute("user", Context.getAuthenticatedUser());
+		log.info("bbbbbbbbbbbbbbbbbbbbbbbbbbooooooooooooooooooooooooooooooooo "+request.getParameter("importDate"));
+		model.addAttribute("importDate", request.getParameter("importDate"));
+		
 	}
+
+	
+	
 }
