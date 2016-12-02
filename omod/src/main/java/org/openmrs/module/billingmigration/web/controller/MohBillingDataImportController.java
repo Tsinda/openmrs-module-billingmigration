@@ -39,14 +39,13 @@ public class MohBillingDataImportController extends ParameterizableViewControlle
 				Context.getService(serviceService.class).updateBillItems();
 				closedBills=Context.getService(serviceService.class).closeGlobalBills(importDate, Context.getAuthenticatedUser());
 				
-				mav.addObject("policyList", policyList);
-				mav.addObject("importDate", importDateStr);
-				mav.addObject("globalBills", globalBills);
-				mav.addObject("updatedCons", updatedCons);
-				mav.addObject("payments", payments);
-				mav.addObject("closedBills", closedBills);
 			}
-
+			mav.addObject("policyList", policyList);
+			mav.addObject("importDate", importDateStr);
+			mav.addObject("globalBills", globalBills);
+			mav.addObject("updatedCons", updatedCons);
+			mav.addObject("payments", payments);
+			mav.addObject("closedBills", closedBills);
 		return mav;
 	}
 

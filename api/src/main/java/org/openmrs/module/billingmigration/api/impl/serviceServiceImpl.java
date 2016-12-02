@@ -90,6 +90,7 @@ public class serviceServiceImpl extends BaseOpenmrsService implements serviceSer
 	public Integer closeGlobalBills(Date date,User user) {
 		return dao.closeGlobalBills(date,user);
 	}
+
 	
 	
 }
