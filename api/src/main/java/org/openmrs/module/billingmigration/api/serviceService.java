@@ -72,4 +72,5 @@ public interface serviceService extends OpenmrsService {
 	 */
 	public Integer closeGlobalBills(Date date,User user);
 	
+	
 }

@@ -119,6 +119,15 @@ public class HibernateserviceDAO implements serviceDAO {
 		StringBuilder payQuery = new StringBuilder("");
 		payQuery.append("select cash_payment_id from moh_bill_cash_payment");
 		int payments = session.createSQLQuery(payQuery.toString()).list().size();
+		
+		//to populate paidservicebill
+		StringBuilder q = new StringBuilder("insert into moh_bill_paid_service_bill(bill_payment_id,patient_service_bill_id,paid_quantity,creator,created_date,voided)"
+					+"select bp.bill_payment_id,psb.patient_service_bill_id,psb.quantity,bp.creator,bp.created_date,bp.voided "
+					+ "from moh_bill_patient_service_bill psb, moh_bill_consommation c, moh_bill_patient_bill pb, moh_bill_payment bp "
+					+ "where psb.consommation_id=c.consommation_id and c.patient_bill_id=pb.patient_bill_id "
+					+ "and pb.patient_bill_id=bp.patient_bill_id");
+		session.createSQLQuery(q.toString()).executeUpdate();
+		
 		return payments;
 	}
 
@@ -166,5 +175,6 @@ public class HibernateserviceDAO implements serviceDAO {
 		StringBuilder updateQuery = new StringBuilder("update moh_bill_global_bill set closed="+user.getUserId()+",closed_by="+user.getUserId()+", closing_date='"+datef+"'");
 		return session.createSQLQuery(updateQuery.toString()).executeUpdate();
 	}
+
 
 }
